@@ -18,7 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  String _role = 'Customer'; // Default role
+  String _role = 'Customer';
   bool _isLoading = false;
   String? _error;
 
@@ -72,105 +72,134 @@ class _SignUpScreenState extends State<SignUpScreen> {
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: _inputDecoration('Full Name'),
-                validator: (value) =>
-                value!.isEmpty ? 'Enter your name' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _emailController,
-                decoration: _inputDecoration('Email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                value!.isEmpty ? 'Enter your email' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _phoneController,
-                decoration: _inputDecoration('Phone Number'),
-                keyboardType: TextInputType.phone,
-                validator: (value) =>
-                value!.isEmpty ? 'Enter your phone number' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: _inputDecoration('Password'),
-                validator: (value) =>
-                value!.length < 6 ? 'Minimum 6 characters' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _confirmPasswordController,
-                obscureText: true,
-                decoration: _inputDecoration('Confirm Password'),
-                validator: (value) =>
-                value!.isEmpty ? 'Confirm your password' : null,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      appBar: AppBar(
+        title: const Text('Sign Up'),
+        centerTitle: true,
+        backgroundColor: Colors.teal,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.teal, Colors.tealAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: RadioListTile<String>(
-                      value: 'Customer',
-                      groupValue: _role,
-                      title: const Text('User'),
-                      onChanged: (value) => setState(() => _role = value!),
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: _inputDecoration('Full Name'),
+                    validator: (value) =>
+                    value!.isEmpty ? 'Enter your name' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: _inputDecoration('Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) =>
+                    value!.isEmpty ? 'Enter your email' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: _inputDecoration('Phone Number'),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) =>
+                    value!.isEmpty ? 'Enter your phone number' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: _inputDecoration('Password'),
+                    validator: (value) =>
+                    value!.length < 6 ? 'Minimum 6 characters' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    decoration: _inputDecoration('Confirm Password'),
+                    validator: (value) =>
+                    value!.isEmpty ? 'Confirm your password' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _role,
+                    decoration: _inputDecoration('Role'),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'Customer',
+                        child: Text('Customer'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Organizer',
+                        child: Text('Organizer'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _role = value!;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  if (_error != null)
+                    Text(_error!, style: const TextStyle(color: Colors.red)),
+                  const SizedBox(height: 20),
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: _signUp,
+                      child: const Text(
+                        'Sign Up',
+                        style:
+                        TextStyle(fontSize: 18, color: Colors.white),
+                      ),
                     ),
                   ),
-                  Expanded(
-                    child: RadioListTile<String>(
-                      value: 'Organizer',
-                      groupValue: _role,
-                      title: const Text('Organizer'),
-                      onChanged: (value) => setState(() => _role = value!),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pushReplacementNamed(context, '/signin'),
+                    child: const Text(
+                      'Already have an account? Sign in',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              if (_error != null)
-                Text(_error!, style: const TextStyle(color: Colors.red)),
-              const SizedBox(height: 20),
-              _isLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 14, horizontal: 32),
-                ),
-                onPressed: _signUp,
-                child: const Text('Sign Up'),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/signin'),
-                child: const Text('Already have an account? Sign in'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
