@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/my_bookings_screen.dart';
+import 'package:myapp/screens/customer/book_event_screen.dart';
+import 'package:myapp/screens/customer/customer_bookings_screen.dart';
 import 'package:myapp/screens/organizer/create_event_screen.dart';
 import 'package:myapp/screens/organizer/organizer_booking_review_screen.dart';
 import 'package:myapp/screens/organizer/organizer_home_screen.dart';
@@ -54,6 +55,13 @@ class MyApp extends StatelessWidget {
           return VenueDetailsScreen(venueId: venueId);
         },
         '/customer-bookings': (_) => const MyBookingsScreen(),
+        '/book-event': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return BookEventScreen(
+            eventId: args['eventId'],
+            organizerId: args['organizerId'],
+          );
+        },
 
       },
     );

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/screens/customer/customer_bookings_screen.dart';
 
 import 'event_listing_screen.dart';
 
@@ -61,10 +62,6 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
       }).toList();
     }
 
-    if (_venueDateRange != null) {
-      // Handle venue date filtering if needed
-    }
-
     setState(() {
       _filteredVenues = filteredList;
     });
@@ -93,43 +90,41 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     });
   }
 
-  void _selectEventDateRange() async {
-    final DateTimeRange? pickedRange = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2026),
-    );
-    if (pickedRange != null) {
-      setState(() {
-        _eventDateRange = pickedRange;
-      });
-      _filterEvents();
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final screens = [
       EventListingScreen(),
       _buildHomeView(),
-      _buildMyBookingsView(),
+      MyBookingsScreen(),
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Customer Home')),
-      body: screens[_currentIndex],
+      appBar: AppBar(
+        title: const Text('Customer Home'),
+        backgroundColor: Colors.teal,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.teal, Colors.tealAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: screens[_currentIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         items: const [
-
           BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Venues'),
+          BottomNavigationBarItem(icon: Icon(Icons.place), label: 'Venues'),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Bookings'),
         ],
         onTap: (index) {
           setState(() => _currentIndex = index);
         },
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
       ),
     );
   }
@@ -151,12 +146,21 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           const SizedBox(height: 16),
           const Align(
             alignment: Alignment.centerLeft,
-            child: Text('Available Venues',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Text(
+              'Available Venues',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
           ),
           const SizedBox(height: 8),
           _filteredVenues.isEmpty
-              ? const Expanded(child: Center(child: Text('No venues found')))
+              ? const Expanded(
+            child: Center(
+              child: Text(
+                'No venues found',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          )
               : Expanded(
             child: ListView.builder(
               itemCount: _filteredVenues.length,
@@ -175,8 +179,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     );
   }
 
-
-  Widget _buildListCard({required String organizerID ,required String title, required String subtitle}) {
+  Widget _buildListCard({required String organizerID, required String title, required String subtitle}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -196,18 +199,22 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              const Icon(Icons.event, size: 40, color: Colors.grey),
+              const Icon(Icons.business, size: 40, color: Colors.teal),
               const SizedBox(width: 16),
               Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title,
-                      style:
-                      const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(subtitle, style: const TextStyle(color: Colors.grey)),
-                ]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(subtitle, style: const TextStyle(color: Colors.grey)),
+                  ],
+                ),
               ),
-              const Icon(Icons.arrow_forward_ios, size: 16),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.teal),
             ],
           ),
         ),
@@ -216,6 +223,11 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   }
 
   Widget _buildMyBookingsView() {
-    return const Center(child: Text('My Bookings will be shown here'));
+    return const Center(
+      child: Text(
+        'My Bookings will be shown here',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
   }
 }

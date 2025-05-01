@@ -12,7 +12,7 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
-  late DocumentSnapshot eventDetails;
+  DocumentSnapshot? eventDetails;
 
   @override
   void initState() {
@@ -31,98 +31,163 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         eventDetails = snapshot;
       });
     } else {
-      // Handle event not found case (optional)
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Event not found')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Event not found')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Event Details')),
-      body:
-          eventDetails == null
-              ? const Center(
-                child: CircularProgressIndicator(),
-              ) // While data is being fetched
-              : Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  children: [
-                    Text(
-                      eventDetails['eventType'] ?? 'Event Type not available',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+      appBar: AppBar(
+        title: const Text('Event Details'),
+        backgroundColor: Colors.teal,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.teal, Colors.tealAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: eventDetails == null
+            ? const Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        )
+            : Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        eventDetails!['eventType'] ?? 'Event Type not available',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text('Capacity: ${eventDetails['capacity']}'),
-                    const SizedBox(height: 6),
-                    Text('Cost: Rs. ${eventDetails['eventCost']}'),
-                    Text('Token Payment: Rs. ${eventDetails['tokenPayment']}'),
-                    Text(
-                      'Available Dates: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(eventDetails['availableFrom']))} - ${DateFormat('yyyy-MM-dd').format(DateTime.parse(eventDetails['availableTo']))}',
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Services Included:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 6),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          (eventDetails['services'] as List)
-                              .map((service) => Text('- $service'))
-                              .toList(),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Food Menu Options:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 6),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          (eventDetails['foodMenu'] as List)
-                              .map((food) => Text('- $food'))
-                              .toList(),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        // TODO: Handle booking logic when it's implemented
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text(
-                                'Booking functionality coming soon!',
-                              ),
-                              content: const Text(
-                                'Booking feature will be available shortly.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Close'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: const Text('Book Now'),
-                    ),
-                  ],
+                      const SizedBox(height: 12),
+                      Text(
+                        'Capacity: ${eventDetails!['capacity']}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Cost: Rs. ${eventDetails!['eventCost']}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      Text(
+                        'Token Payment: Rs. ${eventDetails!['tokenPayment']}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      Text(
+                        'Available Dates: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(eventDetails!['availableFrom']))} - ${DateFormat('yyyy-MM-dd').format(DateTime.parse(eventDetails!['availableTo']))}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(height: 16),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Services Included:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.teal,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: (eventDetails!['services'] as List)
+                            .map((service) => Text('- $service'))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Food Menu Options:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.teal,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: (eventDetails!['foodMenu'] as List)
+                            .map((food) => Text('- $food'))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/book-event',
+                    arguments: {
+                      'eventId': eventDetails?.id,
+                      'organizerId': eventDetails?['organizerId'],
+                    },
+                  );
+                },
+                child: const Text(
+                  'Book Now',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
