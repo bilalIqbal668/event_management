@@ -1,0 +1,187 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:myapp/helpers/AppConstants.dart';
+
+import 'event_detail_screen.dart';
+
+class EventListingScreen extends StatefulWidget {
+  final String? organizerID;
+
+  const EventListingScreen({super.key, this.organizerID});
+
+  @override
+  State<EventListingScreen> createState() => _EventListingScreenState();
+}
+
+class _EventListingScreenState extends State<EventListingScreen> {
+  final TextEditingController _capacityController = TextEditingController();
+  DateTimeRange? _selectedDateRange;
+  String? _selectedEventType;
+
+  List<DocumentSnapshot> _events = [];
+  List<DocumentSnapshot> _filteredEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEvents();
+  }
+
+  Future<void> _fetchEvents() async {
+    final eventCollection = FirebaseFirestore.instance.collection('events');
+    QuerySnapshot snapshot;
+
+    if (widget.organizerID != null) {
+      snapshot =
+          await eventCollection
+              .where('organizerId', isEqualTo: widget.organizerID)
+              .get();
+    } else {
+      snapshot = await eventCollection.get();
+    }
+
+    setState(() {
+      _events = snapshot.docs;
+      _filteredEvents = _events;
+    });
+  }
+
+  void _filterEvents() {
+    List<DocumentSnapshot> filtered = _events;
+
+    if (_capacityController.text.isNotEmpty) {
+      int capacity = int.tryParse(_capacityController.text.trim()) ?? 0;
+      filtered = filtered.where((e) => e['capacity'] >= capacity).toList();
+    }
+
+    if (_selectedEventType != null) {
+      filtered =
+          filtered.where((e) => e['eventType'] == _selectedEventType).toList();
+    }
+
+    if (_selectedDateRange != null) {
+      filtered =
+          filtered.where((e) {
+            DateTime from = DateTime.parse(e['availableFrom']);
+            DateTime to = DateTime.parse(e['availableTo']);
+            return to.isAfter(_selectedDateRange!.start) &&
+                from.isBefore(_selectedDateRange!.end);
+          }).toList();
+    }
+
+    setState(() {
+      _filteredEvents = filtered;
+    });
+  }
+
+  void _selectDateRange() async {
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2026),
+      initialDateRange: _selectedDateRange,
+    );
+
+    if (picked != null) {
+      setState(() => _selectedDateRange = picked);
+      _filterEvents();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Available Events')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _capacityController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Minimum Capacity',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onChanged: (_) => _filterEvents(),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: 'Event Type',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              value: _selectedEventType,
+              items:
+                  AppConstant.eventTypes.map((type) {
+                    return DropdownMenuItem(value: type, child: Text(type));
+                  }).toList(),
+              onChanged: (val) {
+                setState(() => _selectedEventType = val);
+                _filterEvents();
+              },
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: _selectDateRange,
+              child: const Text('Select Available Date Range'),
+            ),
+            const SizedBox(height: 12),
+
+            _filteredEvents.isEmpty
+                ? const Expanded(child: Center(child: Text('No events found')))
+                : Expanded(
+                  child: ListView.builder(
+                    itemCount: _filteredEvents.length,
+                    itemBuilder: (context, index) {
+                      final event = _filteredEvents[index];
+                      return GestureDetector(
+                        onTap: (){
+                          MaterialPageRoute(
+                            builder: (context) => EventDetailScreen(eventId: event.id), // Use event.id, not event['eventId']
+                          );
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  event['eventType'],
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text('Capacity: ${event['capacity']}'),
+                                Text('Cost: Rs. ${event['eventCost']}'),
+                                Text('Token: Rs. ${event['tokenPayment']}'),
+                                Text(
+                                  'Dates: ${event['availableFrom'].substring(0, 10)} - ${event['availableTo'].substring(0, 10)}',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+          ],
+        ),
+      ),
+    );
+  }
+}
