@@ -64,6 +64,45 @@ class _OrganizerBookingDetailsScreenState
     });
   }
 
+  Future<void> _closeEvent() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(widget.bookingId)
+          .update({
+        'status': 'closed', // Or whatever original status you want to reset to
+        'closedAt': Timestamp.now(),
+      });
+
+      setState(() {
+        bookingData!['status'] = 'booked';
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Event closed successfully.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to close event.')),
+      );
+    }
+  }
+
+  bool _isEventTodayAndPaid80Percent() {
+    if (bookingData == null) return false;
+
+    final eventTimestamp = bookingData!['eventDate'] as Timestamp;
+    final eventDate = eventTimestamp.toDate();
+    final now = DateTime.now();
+
+    final isToday = eventDate.year == now.year &&
+        eventDate.month == now.month &&
+        eventDate.day == now.day;
+
+    final status = bookingData!['status'];
+    return isToday && status == 'paid_80_percent';
+  }
+
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -87,8 +126,9 @@ class _OrganizerBookingDetailsScreenState
 
   Widget _buildActionButtons() {
     final status = bookingData?['status'];
-    final hasTeamAssignments = (bookingData as Map<String, dynamic>).containsKey('teamAssignments') &&
-        !(bookingData?['teamAssignments']?.isEmpty ?? true);
+    final hasTeamAssignments =
+        (bookingData as Map<String, dynamic>).containsKey('teamAssignments') &&
+            !(bookingData?['teamAssignments']?.isEmpty ?? true);
 
     if (status == 'pending' || status == 'in_progress') {
       return Row(
@@ -122,26 +162,29 @@ class _OrganizerBookingDetailsScreenState
       );
     }
 
-    if (status == 'token_paid' && !hasTeamAssignments) {
-      return ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AssignTeamScreen(
-                bookingId: widget.bookingId,
-                organizerId: bookingData?['organizerId'],
+    if ((status == 'token_paid' || status == 'paid_80_percent') &&
+        !hasTeamAssignments) {
+      return Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AssignTeamScreen(
+                  bookingId: widget.bookingId,
+                  organizerId: bookingData?['organizerId'],
+                ),
               ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.teal,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blueAccent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
           ),
+          child: const Text("Assign Team"),
         ),
-        child: const Text('Assign Team Members'),
       );
     }
 
@@ -180,56 +223,75 @@ class _OrganizerBookingDetailsScreenState
         title: const Text('Booking Details'),
         backgroundColor: Colors.teal,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+      body: SizedBox.expand(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal, Colors.tealAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildDetailRow('Customer Name', customerName),
-                  _buildDetailRow(
-                      'Venue', bookingData?['venueName'] ?? 'N/A'),
-                  _buildDetailRow(
-                      'Event Type', bookingData?['eventType'] ?? 'N/A'),
-                  _buildDetailRow(
-                      'Event Date',
-                      (bookingData?['eventDate'] as Timestamp)
-                          .toDate()
-                          .toString()
-                          .split(' ')
-                          .first),
-                  _buildDetailRow('Attendees',
-                      bookingData?['attendees'].toString() ?? 'N/A'),
-                  _buildDetailRow('Decoration',
-                      bookingData?['decoration'] ?? 'N/A'),
-                  _buildDetailRow(
-                      'AV Setup', bookingData?['avSetup'] ?? 'N/A'),
-                  _buildDetailRow(
-                      'Food Menu',
-                      (bookingData?['foodMenu'] as List<dynamic>)
-                          .join(', ')),
-                  _buildDetailRow('Status',
-                      bookingData!['status'].toString().toUpperCase()),
-                  const SizedBox(height: 20),
-                  _buildActionButtons(),
-                  _buildTeamMembers(),
-                ],
+          ),
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailRow('Customer Name', customerName),
+                    _buildDetailRow(
+                        'Venue', bookingData?['venueName'] ?? 'N/A'),
+                    _buildDetailRow(
+                        'Event Type', bookingData?['eventType'] ?? 'N/A'),
+                    _buildDetailRow(
+                        'Event Date',
+                        (bookingData?['eventDate'] as Timestamp)
+                            .toDate()
+                            .toString()
+                            .split(' ')
+                            .first),
+                    _buildDetailRow('Attendees',
+                        bookingData?['attendees'].toString() ?? 'N/A'),
+                    _buildDetailRow(
+                        'Decoration', bookingData?['decoration'] ?? 'N/A'),
+                    _buildDetailRow(
+                        'AV Setup', bookingData?['avSetup'] ?? 'N/A'),
+                    _buildDetailRow(
+                        'Food Menu',
+                        (bookingData?['foodMenu'] as List<dynamic>)
+                            .join(', ')),
+                    _buildDetailRow('Status',
+                        bookingData!['status'].toString().toUpperCase()),
+                    const SizedBox(height: 20),
+                    _buildActionButtons(),
+                    _buildTeamMembers(),
+                    const SizedBox(height: 20),
+                    if (_isEventTodayAndPaid80Percent())
+                      Center(
+                        child: ElevatedButton.icon(
+                          onPressed: _closeEvent,
+                          icon: const Icon(Icons.event_available),
+                          label: const Text('Close Event'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.teal[700],
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -3,25 +3,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/screens/organizer/team_assignment_screen.dart';
+
 import 'organizer_booking_details.dart';
 
 class OrganizerBookingsScreen extends StatelessWidget {
   const OrganizerBookingsScreen({super.key});
 
   Future<void> _acceptBooking(String bookingId) async {
-    await FirebaseFirestore.instance.collection('bookings').doc(bookingId).update({
-      'status': 'in_progress',
-    });
+    await FirebaseFirestore.instance
+        .collection('bookings')
+        .doc(bookingId)
+        .update({'status': 'in_progress'});
   }
 
   Future<void> _rejectBooking(String bookingId) async {
-    await FirebaseFirestore.instance.collection('bookings').doc(bookingId).update({
-      'status': 'rejected',
-    });
+    await FirebaseFirestore.instance
+        .collection('bookings')
+        .doc(bookingId)
+        .update({'status': 'rejected'});
   }
 
   Future<String> _getCustomerName(String customerId) async {
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(customerId).get();
+    final userDoc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(customerId)
+            .get();
     return userDoc.data()?['name'] ?? 'Unknown';
   }
 
@@ -64,7 +71,10 @@ class OrganizerBookingsScreen extends StatelessWidget {
                 final venueName = booking['venueName'] ?? 'Venue';
                 final eventDate = (booking['eventDate'] as Timestamp).toDate();
                 final customerId = booking['customerId'] ?? '';
-                final hasTeamAssignments = (booking.data() as Map<String, dynamic>).containsKey('teamAssignments') &&
+                final hasTeamAssignments =
+                    (booking.data() as Map<String, dynamic>).containsKey(
+                      'teamAssignments',
+                    ) &&
                     !(booking['teamAssignments']?.isEmpty ?? true);
 
                 return FutureBuilder<String>(
@@ -77,12 +87,18 @@ class OrganizerBookingsScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OrganizerBookingDetailsScreen(bookingId: bookingId),
+                            builder:
+                                (context) => OrganizerBookingDetailsScreen(
+                                  bookingId: bookingId,
+                                ),
                           ),
                         );
                       },
                       child: Card(
-                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -103,15 +119,24 @@ class OrganizerBookingsScreen extends StatelessWidget {
                               const SizedBox(height: 8),
                               Text(
                                 "Customer: $customerName",
-                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
                               Text(
                                 "Venue: $venueName",
-                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
                               Text(
                                 "Date: ${DateFormat('yyyy-MM-dd').format(eventDate)}",
-                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -123,16 +148,20 @@ class OrganizerBookingsScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              if (!hasTeamAssignments && status == 'pending') ...[
+                              if (!hasTeamAssignments &&
+                                  status == 'pending') ...[
                                 Row(
                                   children: [
                                     Expanded(
                                       child: ElevatedButton(
-                                        onPressed: () => _acceptBooking(bookingId),
+                                        onPressed:
+                                            () => _acceptBooking(bookingId),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.green,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                         ),
                                         child: const Text("Accept"),
@@ -141,11 +170,14 @@ class OrganizerBookingsScreen extends StatelessWidget {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: ElevatedButton(
-                                        onPressed: () => _rejectBooking(bookingId),
+                                        onPressed:
+                                            () => _rejectBooking(bookingId),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.red,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                         ),
                                         child: const Text("Reject"),
@@ -154,16 +186,19 @@ class OrganizerBookingsScreen extends StatelessWidget {
                                   ],
                                 ),
                               ],
-                              if (status == 'token_paid' && !hasTeamAssignments)
+                              if ((status == 'token_paid' ||
+                                      status == "paid_80_percent") &&
+                                  !hasTeamAssignments)
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AssignTeamScreen(
-                                          bookingId: bookingId,
-                                          organizerId: organizerId,
-                                        ),
+                                        builder:
+                                            (context) => AssignTeamScreen(
+                                              bookingId: bookingId,
+                                              organizerId: organizerId,
+                                            ),
                                       ),
                                     );
                                   },

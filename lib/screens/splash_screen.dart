@@ -18,24 +18,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (user != null) {
         try {
-          // Fetch user data from Firestore to check the role
           final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
 
           if (userDoc.exists && userDoc.data() != null && userDoc.data()!.containsKey('role')) {
             final role = userDoc['role'];
 
-            // Navigate based on user role
             if (role == 'Organizer') {
               Navigator.pushReplacementNamed(context, '/organizer-home-screen');
             } else {
               Navigator.pushReplacementNamed(context, '/customer-home-screen');
             }
           } else {
-            Navigator.pushReplacementNamed(context, '/signin');  // Fallback to sign-in if no role
+            Navigator.pushReplacementNamed(context, '/signin');
           }
         } catch (e) {
           print("Error fetching user data: $e");
-          Navigator.pushReplacementNamed(context, '/signin');  // Error handling fallback
+          Navigator.pushReplacementNamed(context, '/signin');
         }
       } else {
         Navigator.pushReplacementNamed(context, '/signin');
@@ -45,11 +43,40 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
+    return Scaffold(
+      body: Container(
+        constraints: const BoxConstraints.expand(),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.teal, Colors.tealAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.event,
+              size: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Event Manager',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 40),
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-

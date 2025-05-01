@@ -113,7 +113,7 @@ class MyBookingsScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BookingDetailsScreen(bookingData: booking.data() as Map<String, dynamic>),
+                        builder: (context) => BookingDetailsScreen(bookingData: booking.data() as Map<String, dynamic>,bookingId: bookingId,),
                       ),
                     );
                   },

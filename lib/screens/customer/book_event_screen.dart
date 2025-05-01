@@ -82,7 +82,7 @@ class _BookEventScreenState extends State<BookEventScreen> {
       lastDate: lastDate,
     );
 
-    if (selectedDate != null && selectedDate.isAfter(firstDate) && selectedDate.isBefore(lastDate)) {
+    if (selectedDate != null) {
       setState(() {
         _selectedEventDate = selectedDate;
       });

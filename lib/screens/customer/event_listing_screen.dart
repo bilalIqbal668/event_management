@@ -5,8 +5,13 @@ import 'event_detail_screen.dart';
 
 class EventListingScreen extends StatefulWidget {
   final String? organizerID;
+  final bool isFromOrganizer;
 
-  const EventListingScreen({super.key, this.organizerID});
+  const EventListingScreen({
+    super.key,
+    this.organizerID,
+    this.isFromOrganizer = false,
+  });
 
   @override
   State<EventListingScreen> createState() => _EventListingScreenState();
@@ -30,18 +35,39 @@ class _EventListingScreenState extends State<EventListingScreen> {
     final eventCollection = FirebaseFirestore.instance.collection('events');
     QuerySnapshot snapshot;
 
-    if (widget.organizerID != null) {
+    if (widget.isFromOrganizer && widget.organizerID != null) {
+      // Show all events created by the organizer
       snapshot = await eventCollection
           .where('organizerId', isEqualTo: widget.organizerID)
           .get();
-    } else {
-      snapshot = await eventCollection.get();
-    }
 
-    setState(() {
-      _events = snapshot.docs;
-      _filteredEvents = _events;
-    });
+      setState(() {
+        _events = snapshot.docs;
+        _filteredEvents = _events;
+      });
+    } else {
+      // Customer: filter out booked events
+      final eventSnapshot = await eventCollection.get();
+
+      // Fetch bookings with blocked statuses
+      final bookingSnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('status', whereIn: ['token_paid', 'paid_80_percent'])
+          .get();
+
+      final blockedEventIds = bookingSnapshot.docs
+          .map((doc) => doc['eventId'] as String)
+          .toSet();
+
+      final availableEvents = eventSnapshot.docs.where((event) {
+        return !blockedEventIds.contains(event.id);
+      }).toList();
+
+      setState(() {
+        _events = availableEvents;
+        _filteredEvents = _events;
+      });
+    }
   }
 
   void _filterEvents() {
@@ -53,7 +79,8 @@ class _EventListingScreenState extends State<EventListingScreen> {
     }
 
     if (_selectedEventType != null) {
-      filtered = filtered.where((e) => e['eventType'] == _selectedEventType).toList();
+      filtered =
+          filtered.where((e) => e['eventType'] == _selectedEventType).toList();
     }
 
     if (_selectedDateRange != null) {
@@ -88,7 +115,8 @@ class _EventListingScreenState extends State<EventListingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Available Events'),
+        title:
+        Text(widget.isFromOrganizer ? 'My Events' : 'Available Events'),
         backgroundColor: Colors.teal,
       ),
       body: Container(
@@ -104,46 +132,48 @@ class _EventListingScreenState extends State<EventListingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                controller: _capacityController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Minimum Capacity',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              if (!widget.isFromOrganizer) ...[
+                TextField(
+                  controller: _capacityController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Minimum Capacity',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  onChanged: (_) => _filterEvents(),
                 ),
-                onChanged: (_) => _filterEvents(),
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Event Type',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Event Type',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  value: _selectedEventType,
+                  items: AppConstant.eventTypes.map((type) {
+                    return DropdownMenuItem(value: type, child: Text(type));
+                  }).toList(),
+                  onChanged: (val) {
+                    setState(() => _selectedEventType = val);
+                    _filterEvents();
+                  },
                 ),
-                value: _selectedEventType,
-                items: AppConstant.eventTypes.map((type) {
-                  return DropdownMenuItem(value: type, child: Text(type));
-                }).toList(),
-                onChanged: (val) {
-                  setState(() => _selectedEventType = val);
-                  _filterEvents();
-                },
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: _selectDateRange,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: _selectDateRange,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  child: const Text('Select Available Date Range'),
                 ),
-                child: const Text('Select Available Date Range'),
-              ),
-              const SizedBox(height: 12),
+                const SizedBox(height: 12),
+              ],
               _filteredEvents.isEmpty
                   ? const Expanded(
                 child: Center(
@@ -191,7 +221,8 @@ class _EventListingScreenState extends State<EventListingScreen> {
                               const SizedBox(height: 6),
                               Text('Capacity: ${event['capacity']}'),
                               Text('Cost: Rs. ${event['eventCost']}'),
-                              Text('Token: Rs. ${event['tokenPayment']}'),
+                              Text(
+                                  'Token: Rs. ${event['tokenPayment']}'),
                               Text(
                                 'Dates: ${event['availableFrom'].substring(0, 10)} - ${event['availableTo'].substring(0, 10)}',
                               ),

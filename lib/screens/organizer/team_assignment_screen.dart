@@ -16,8 +16,8 @@ class AssignTeamScreen extends StatefulWidget {
 }
 
 class _AssignTeamScreenState extends State<AssignTeamScreen> {
-  List<Map<String, dynamic>> availableTeamMembers = []; // List of team members with roles
-  List<Map<String, dynamic>> assignedTeamMembers = [];  // Team members assigned to the booking
+  List<Map<String, dynamic>> availableTeamMembers = [];
+  List<Map<String, dynamic>> assignedTeamMembers = [];
   bool _isLoading = false;
 
   @override
@@ -32,14 +32,12 @@ class _AssignTeamScreenState extends State<AssignTeamScreen> {
     });
 
     try {
-      // Fetch all team members for the organizer
       final teamSnapshot = await FirebaseFirestore.instance
           .collection('organizers')
           .doc(widget.organizerId)
           .collection('employees')
           .get();
 
-      // Populate the availableTeamMembers list with team member data (name and role)
       availableTeamMembers = teamSnapshot.docs.map((doc) {
         return {
           'name': doc['name'] as String,
@@ -70,7 +68,6 @@ class _AssignTeamScreenState extends State<AssignTeamScreen> {
     });
 
     try {
-      // Update the booking with the assigned team members
       await FirebaseFirestore.instance
           .collection('bookings')
           .doc(widget.bookingId)
@@ -98,55 +95,77 @@ class _AssignTeamScreenState extends State<AssignTeamScreen> {
         title: const Text('Assign Team'),
         backgroundColor: Colors.teal,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select Team Members to Assign:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.teal),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ListView(
-                children: availableTeamMembers.map((member) {
-                  return CheckboxListTile(
-                    title: Text('${member['name']} (${member['role']})'),
-                    value: assignedTeamMembers.contains(member),
-                    onChanged: (isChecked) {
-                      setState(() {
-                        if (isChecked == true) {
-                          assignedTeamMembers.add(member);
-                        } else {
-                          assignedTeamMembers.remove(member);
-                        }
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _assignTeam,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.teal, Colors.tealAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Select Team Members to Assign:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white,
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: _isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text(
-                'Assign Team',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ListView(
+                  children: availableTeamMembers.map((member) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: CheckboxListTile(
+                        title: Text('${member['name']} (${member['role']})'),
+                        value: assignedTeamMembers.contains(member),
+                        onChanged: (isChecked) {
+                          setState(() {
+                            if (isChecked == true) {
+                              assignedTeamMembers.add(member);
+                            } else {
+                              assignedTeamMembers.remove(member);
+                            }
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _assignTeam,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text(
+                    'Assign Team',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
