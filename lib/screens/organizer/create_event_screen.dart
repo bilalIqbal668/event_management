@@ -22,9 +22,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   DateTime? _toDate;
 
   String? _selectedEventType;
-
-
-
   List<String> _selectedServices = [];
   List<String> _selectedFoodMenu = [];
 
@@ -84,104 +81,154 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Event')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              DropdownButtonFormField<String>(
-                value: _selectedEventType,
-                hint: const Text('Select Event Type'),
-                items: AppConstant.eventTypes.map((type) {
-                  return DropdownMenuItem(
-                    value: type,
-                    child: Text(type),
-                  );
-                }).toList(),
-                onChanged: (value) => setState(() => _selectedEventType = value),
-                validator: (value) => value == null ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _capacityController,
-                decoration: const InputDecoration(labelText: 'Capacity'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _selectDate(isFrom: true),
-                      child: Text(_fromDate == null
-                          ? 'Select From Date'
-                          : 'From: ${DateFormat('yyyy-MM-dd').format(_fromDate!)}'),
+      appBar: AppBar(
+        title: const Text('Create Event'),
+        backgroundColor: Colors.teal,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.teal, Colors.tealAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                DropdownButtonFormField<String>(
+                  value: _selectedEventType,
+                  hint: const Text('Select Event Type'),
+                  items: AppConstant.eventTypes.map((type) {
+                    return DropdownMenuItem(
+                      value: type,
+                      child: Text(type),
+                    );
+                  }).toList(),
+                  onChanged: (value) => setState(() => _selectedEventType = value),
+                  validator: (value) => value == null ? 'Required' : null,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _capacityController,
+                  decoration: InputDecoration(
+                    labelText: 'Capacity',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _selectDate(isFrom: true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(_fromDate == null
+                            ? 'Select From Date'
+                            : 'From: ${DateFormat('yyyy-MM-dd').format(_fromDate!)}'),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _selectDate(isFrom: false),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(_toDate == null
+                            ? 'Select To Date'
+                            : 'To: ${DateFormat('yyyy-MM-dd').format(_toDate!)}'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text('Select Services', style: TextStyle(fontWeight: FontWeight.bold)),
+                ...AppConstant.availableServices.map((service) => CheckboxListTile(
+                  title: Text(service),
+                  value: _selectedServices.contains(service),
+                  onChanged: (selected) {
+                    setState(() {
+                      if (selected == true) {
+                        _selectedServices.add(service);
+                      } else {
+                        _selectedServices.remove(service);
+                      }
+                    });
+                  },
+                )),
+                const SizedBox(height: 16),
+                const Text('Select Food Menu', style: TextStyle(fontWeight: FontWeight.bold)),
+                ...AppConstant.foodMenuOptions.map((item) => CheckboxListTile(
+                  title: Text(item),
+                  value: _selectedFoodMenu.contains(item),
+                  onChanged: (selected) {
+                    setState(() {
+                      if (selected == true) {
+                        _selectedFoodMenu.add(item);
+                      } else {
+                        _selectedFoodMenu.remove(item);
+                      }
+                    });
+                  },
+                )),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _tokenPaymentController,
+                  decoration: InputDecoration(
+                    labelText: 'Token Payment (PKR)',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _eventCostController,
+                  decoration: InputDecoration(
+                    labelText: 'Event Cost (PKR)',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _selectDate(isFrom: false),
-                      child: Text(_toDate == null
-                          ? 'Select To Date'
-                          : 'To: ${DateFormat('yyyy-MM-dd').format(_toDate!)}'),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Text('Select Services', style: TextStyle(fontWeight: FontWeight.bold)),
-              ...AppConstant.availableServices.map((service) => CheckboxListTile(
-                title: Text(service),
-                value: _selectedServices.contains(service),
-                onChanged: (selected) {
-                  setState(() {
-                    if (selected == true) {
-                      _selectedServices.add(service);
-                    } else {
-                      _selectedServices.remove(service);
-                    }
-                  });
-                },
-              )),
-              const SizedBox(height: 16),
-              const Text('Select Food Menu', style: TextStyle(fontWeight: FontWeight.bold)),
-              ...AppConstant.foodMenuOptions.map((item) => CheckboxListTile(
-                title: Text(item),
-                value: _selectedFoodMenu.contains(item),
-                onChanged: (selected) {
-                  setState(() {
-                    if (selected == true) {
-                      _selectedFoodMenu.add(item);
-                    } else {
-                      _selectedFoodMenu.remove(item);
-                    }
-                  });
-                },
-              )),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _tokenPaymentController,
-                decoration: const InputDecoration(labelText: 'Token Payment (PKR)'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _eventCostController,
-                decoration: const InputDecoration(labelText: 'Event Cost (PKR)'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submit,
-                child: const Text('Create Event'),
-              )
-            ],
+                  child: const Text('Create Event'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

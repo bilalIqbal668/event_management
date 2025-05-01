@@ -140,7 +140,7 @@ class MyBookingsScreen extends StatelessWidget {
                           _buildStatusChip(status),
                         ],
                       ),
-                      trailing: status == 'pending'
+                      trailing: status == 'in_progress'
                           ? ElevatedButton(
                         onPressed: () => _payToken(bookingId),
                         style: ElevatedButton.styleFrom(

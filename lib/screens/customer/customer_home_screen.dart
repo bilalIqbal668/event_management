@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/screens/customer/customer_bookings_screen.dart';
 
@@ -30,6 +31,12 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     super.initState();
     _fetchVenues();
     _fetchEvents();
+  }
+  void _logout() async {
+    await FirebaseAuth.instance.signOut();
+    if (context.mounted) {
+      Navigator.pushNamedAndRemoveUntil(context, '/signin', (_) => false);
+    }
   }
 
   Future<void> _fetchVenues() async {
@@ -67,28 +74,6 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     });
   }
 
-  void _filterEvents() {
-    List<DocumentSnapshot> filteredList = _events;
-
-    if (_selectedEventType != null) {
-      filteredList = filteredList.where((event) {
-        return event['eventType'] == _selectedEventType;
-      }).toList();
-    }
-
-    if (_eventDateRange != null) {
-      filteredList = filteredList.where((event) {
-        DateTime from = DateTime.parse(event['availableFrom']);
-        DateTime to = DateTime.parse(event['availableTo']);
-        return from.isBefore(_eventDateRange!.end) &&
-            to.isAfter(_eventDateRange!.start);
-      }).toList();
-    }
-
-    setState(() {
-      _filteredEvents = filteredList;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +86,12 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Customer Home'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+          ),
+        ],
         backgroundColor: Colors.teal,
       ),
       body: Container(

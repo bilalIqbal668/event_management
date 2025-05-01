@@ -132,6 +132,7 @@ class _BookEventScreenState extends State<BookEventScreen> {
       'avSetup': _avController.text,
       'status': 'pending',
       'createdAt': FieldValue.serverTimestamp(),
+      'teamAssignments': [],
     };
 
     try {
