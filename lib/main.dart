@@ -42,12 +42,13 @@ class MyApp extends StatelessWidget {
         '/organizer-setup': (_) => const OrganizerSetupScreen(),
         '/organizer-bookings': (_) => const OrganizerBookingsScreen(),
         '/organizer-home-screen': (_) => OrganizerHomeScreen(),
-        '/customer-home-screen': (_) => const CustomerHomeScreen(),
+
         '/create-event': (_) => const CreateEventScreen(),
         '/organizer-profile': (_) => const OrganizerProfileScreen(),
 
         //customer screens
         '/customer-bookings': (_) => const MyBookingsScreen(),
+        '/customer-home-screen': (_) => const CustomerHomeScreen(),
         '/book-event': (context) {
           final args =
               ModalRoute.of(context)!.settings.arguments
