@@ -128,13 +128,13 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Booking Details"),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: SizedBox.expand(
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.teal, Colors.tealAccent],
+              colors: [Colors.lightBlue, Colors.lightBlueAccent],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -208,7 +208,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              color: Colors.teal,
+              color: Colors.lightBlue,
             ),
           ),
           Expanded(

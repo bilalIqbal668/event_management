@@ -93,12 +93,12 @@ class _AssignTeamScreenState extends State<AssignTeamScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Assign Team'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -152,7 +152,7 @@ class _AssignTeamScreenState extends State<AssignTeamScreen> {
                 child: ElevatedButton(
                   onPressed: _assignTeam,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

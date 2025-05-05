@@ -137,7 +137,7 @@ class _OrganizerBookingDetailsScreenState
             child: ElevatedButton(
               onPressed: () => _updateBookingStatus('accepted'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
+                backgroundColor: Colors.lightBlue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -178,7 +178,7 @@ class _OrganizerBookingDetailsScreenState
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal,
+            backgroundColor: Colors.lightBlue,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -221,13 +221,13 @@ class _OrganizerBookingDetailsScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking Details'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: SizedBox.expand(
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.teal, Colors.tealAccent],
+              colors: [Colors.lightBlue, Colors.lightBlueAccent],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -281,7 +281,7 @@ class _OrganizerBookingDetailsScreenState
                           icon: const Icon(Icons.event_available),
                           label: const Text('Close Event'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal[700],
+                            backgroundColor: Colors.lightBlue[700],
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 14),
                             shape: RoundedRectangleBorder(

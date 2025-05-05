@@ -163,12 +163,12 @@ class _BookEventScreenState extends State<BookEventScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book Event'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -195,7 +195,7 @@ class _BookEventScreenState extends State<BookEventScreen> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: Colors.teal,
+                            color: Colors.lightBlue,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -251,7 +251,7 @@ class _BookEventScreenState extends State<BookEventScreen> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: Colors.teal,
+                            color: Colors.lightBlue,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -329,7 +329,7 @@ class _BookEventScreenState extends State<BookEventScreen> {
                 // Submit Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

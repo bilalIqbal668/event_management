@@ -133,7 +133,7 @@ class _OrganizerProfileScreenState extends State<OrganizerProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Organizer Profile'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
         actions: [
           IconButton(icon: const Icon(Icons.logout), onPressed: _logout),
         ],
@@ -141,7 +141,7 @@ class _OrganizerProfileScreenState extends State<OrganizerProfileScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -289,7 +289,7 @@ class _OrganizerProfileScreenState extends State<OrganizerProfileScreen> {
                         child: ElevatedButton(
                           onPressed: _addEmployee,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
+                            backgroundColor: Colors.lightBlue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -303,7 +303,7 @@ class _OrganizerProfileScreenState extends State<OrganizerProfileScreen> {
                         child: ElevatedButton(
                           onPressed: _updateProfile,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
+                            backgroundColor: Colors.lightBlue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),

@@ -35,11 +35,23 @@ class _EventListingScreenState extends State<EventListingScreen> {
     final eventCollection = FirebaseFirestore.instance.collection('events');
     QuerySnapshot snapshot;
 
-    if (widget.isFromOrganizer && widget.organizerID != null) {
+    if (!widget.isFromOrganizer && widget.organizerID != null) {
       // Show all events created by the organizer
-      snapshot = await eventCollection
-          .where('organizerId', isEqualTo: widget.organizerID)
-          .get();
+      snapshot =
+          await eventCollection
+              .where('organizerId', isEqualTo: widget.organizerID)
+              .get();
+
+      setState(() {
+        _events = snapshot.docs;
+        _filteredEvents = _events;
+      });
+    } else if (widget.isFromOrganizer) {
+      // Show all events created by the organizer
+      snapshot =
+          await eventCollection
+              .where('organizerId', isEqualTo: widget.organizerID)
+              .get();
 
       setState(() {
         _events = snapshot.docs;
@@ -50,18 +62,19 @@ class _EventListingScreenState extends State<EventListingScreen> {
       final eventSnapshot = await eventCollection.get();
 
       // Fetch bookings with blocked statuses
-      final bookingSnapshot = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('status', whereIn: ['token_paid', 'paid_80_percent'])
-          .get();
+      final bookingSnapshot =
+          await FirebaseFirestore.instance
+              .collection('bookings')
+              .where('status', whereIn: ['token_paid', 'paid_80_percent'])
+              .get();
 
-      final blockedEventIds = bookingSnapshot.docs
-          .map((doc) => doc['eventId'] as String)
-          .toSet();
+      final blockedEventIds =
+          bookingSnapshot.docs.map((doc) => doc['eventId'] as String).toSet();
 
-      final availableEvents = eventSnapshot.docs.where((event) {
-        return !blockedEventIds.contains(event.id);
-      }).toList();
+      final availableEvents =
+          eventSnapshot.docs.where((event) {
+            return !blockedEventIds.contains(event.id);
+          }).toList();
 
       setState(() {
         _events = availableEvents;
@@ -84,12 +97,13 @@ class _EventListingScreenState extends State<EventListingScreen> {
     }
 
     if (_selectedDateRange != null) {
-      filtered = filtered.where((e) {
-        DateTime from = DateTime.parse(e['availableFrom']);
-        DateTime to = DateTime.parse(e['availableTo']);
-        return to.isAfter(_selectedDateRange!.start) &&
-            from.isBefore(_selectedDateRange!.end);
-      }).toList();
+      filtered =
+          filtered.where((e) {
+            DateTime from = DateTime.parse(e['availableFrom']);
+            DateTime to = DateTime.parse(e['availableTo']);
+            return to.isAfter(_selectedDateRange!.start) &&
+                from.isBefore(_selectedDateRange!.end);
+          }).toList();
     }
 
     setState(() {
@@ -115,14 +129,13 @@ class _EventListingScreenState extends State<EventListingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-        Text(widget.isFromOrganizer ? 'My Events' : 'Available Events'),
-        backgroundColor: Colors.teal,
+        title: Text(widget.isFromOrganizer ? 'My Events' : 'Available Events'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -153,9 +166,10 @@ class _EventListingScreenState extends State<EventListingScreen> {
                     ),
                   ),
                   value: _selectedEventType,
-                  items: AppConstant.eventTypes.map((type) {
-                    return DropdownMenuItem(value: type, child: Text(type));
-                  }).toList(),
+                  items:
+                      AppConstant.eventTypes.map((type) {
+                        return DropdownMenuItem(value: type, child: Text(type));
+                      }).toList(),
                   onChanged: (val) {
                     setState(() => _selectedEventType = val);
                     _filterEvents();
@@ -165,7 +179,7 @@ class _EventListingScreenState extends State<EventListingScreen> {
                 ElevatedButton(
                   onPressed: _selectDateRange,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -176,64 +190,63 @@ class _EventListingScreenState extends State<EventListingScreen> {
               ],
               _filteredEvents.isEmpty
                   ? const Expanded(
-                child: Center(
-                  child: Text(
-                    'No events found',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              )
+                    child: Center(
+                      child: Text(
+                        'No events found',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
                   : Expanded(
-                child: ListView.builder(
-                  itemCount: _filteredEvents.length,
-                  itemBuilder: (context, index) {
-                    final event = _filteredEvents[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EventDetailScreen(
-                              eventId: event.id,
+                    child: ListView.builder(
+                      itemCount: _filteredEvents.length,
+                      itemBuilder: (context, index) {
+                        final event = _filteredEvents[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        EventDetailScreen(eventId: event.id),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    event['eventType'],
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.lightBlue,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text('Capacity: ${event['capacity']}'),
+                                  Text('Cost: Rs. ${event['eventCost']}'),
+                                  Text('Token: Rs. ${event['tokenPayment']}'),
+                                  Text(
+                                    'Dates: ${event['availableFrom'].substring(0, 10)} - ${event['availableTo'].substring(0, 10)}',
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
                       },
-                      child: Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                event['eventType'],
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.teal,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text('Capacity: ${event['capacity']}'),
-                              Text('Cost: Rs. ${event['eventCost']}'),
-                              Text(
-                                  'Token: Rs. ${event['tokenPayment']}'),
-                              Text(
-                                'Dates: ${event['availableFrom'].substring(0, 10)} - ${event['availableTo'].substring(0, 10)}',
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+                    ),
+                  ),
             ],
           ),
         ),

@@ -32,7 +32,7 @@ class MyBookingsScreen extends StatelessWidget {
         label = 'Token Paid';
         break;
       case 'booked':
-        color = Colors.teal;
+        color = Colors.lightBlue;
         label = 'Booked';
         break;
       case 'completed':
@@ -62,12 +62,12 @@ class MyBookingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Bookings"),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -128,7 +128,7 @@ class MyBookingsScreen extends StatelessWidget {
                         eventType,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.teal,
+                          color: Colors.lightBlue,
                         ),
                       ),
                       subtitle: Column(
@@ -144,7 +144,7 @@ class MyBookingsScreen extends StatelessWidget {
                           ? ElevatedButton(
                         onPressed: () => _payToken(bookingId),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
+                          backgroundColor: Colors.lightBlue,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

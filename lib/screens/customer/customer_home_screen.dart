@@ -92,12 +92,12 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
             onPressed: _logout,
           ),
         ],
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -114,7 +114,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
         onTap: (index) {
           setState(() => _currentIndex = index);
         },
-        selectedItemColor: Colors.teal,
+        selectedItemColor: Colors.lightBlue,
         unselectedItemColor: Colors.grey,
       ),
     );
@@ -190,7 +190,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              const Icon(Icons.business, size: 40, color: Colors.teal),
+              const Icon(Icons.business, size: 40, color: Colors.lightBlue),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -198,14 +198,14 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.lightBlue),
                     ),
                     const SizedBox(height: 4),
                     Text(subtitle, style: const TextStyle(color: Colors.grey)),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.teal),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.lightBlue),
             ],
           ),
         ),

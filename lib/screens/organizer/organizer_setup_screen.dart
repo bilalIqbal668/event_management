@@ -97,12 +97,12 @@ class _OrganizerSetupScreenState extends State<OrganizerSetupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Organizer Setup'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -126,7 +126,7 @@ class _OrganizerSetupScreenState extends State<OrganizerSetupScreen> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.teal,
+                          color: Colors.lightBlue,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -164,7 +164,7 @@ class _OrganizerSetupScreenState extends State<OrganizerSetupScreen> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.teal,
+                          color: Colors.lightBlue,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -190,7 +190,7 @@ class _OrganizerSetupScreenState extends State<OrganizerSetupScreen> {
                         child: ElevatedButton(
                           onPressed: _addEmployee,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
+                            backgroundColor: Colors.lightBlue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
@@ -247,7 +247,7 @@ class _OrganizerSetupScreenState extends State<OrganizerSetupScreen> {
                 child: ElevatedButton(
                   onPressed: _saveData,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

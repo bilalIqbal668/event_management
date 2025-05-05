@@ -42,12 +42,12 @@ class OrganizerBookingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Organizer Bookings"),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.tealAccent],
+            colors: [Colors.lightBlue, Colors.lightBlueAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -113,7 +113,7 @@ class OrganizerBookingsScreen extends StatelessWidget {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
-                                  color: Colors.teal,
+                                  color: Colors.lightBlue,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -203,7 +203,7 @@ class OrganizerBookingsScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.teal,
+                                    backgroundColor: Colors.lightBlue,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
