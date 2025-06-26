@@ -83,12 +83,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Event'),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.teal
+,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.lightBlue, Colors.lightBlueAccent],
+            colors: [Colors.purple, Colors.pinkAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -135,7 +136,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       child: ElevatedButton(
                         onPressed: () => _selectDate(isFrom: true),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue,
+                          backgroundColor: Colors.teal
+,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -150,7 +152,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       child: ElevatedButton(
                         onPressed: () => _selectDate(isFrom: false),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue,
+                          backgroundColor: Colors.teal
+,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -220,7 +223,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ElevatedButton(
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlue,
+                    backgroundColor: Colors.teal
+,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

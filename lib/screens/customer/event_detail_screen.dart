@@ -42,12 +42,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Event Details'),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.teal
+,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.lightBlue, Colors.lightBlueAccent],
+            colors: [Colors.purple, Colors.pinkAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -75,7 +76,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.lightBlue,
+                          color: Colors.teal
+,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -116,7 +118,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: Colors.lightBlue,
+                          color: Colors.teal
+,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -146,7 +149,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: Colors.lightBlue,
+                          color: Colors.teal
+,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -163,7 +167,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
+                  backgroundColor: Colors.teal
+,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

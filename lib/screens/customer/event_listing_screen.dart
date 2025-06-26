@@ -130,12 +130,13 @@ class _EventListingScreenState extends State<EventListingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.isFromOrganizer ? 'My Events' : 'Available Events'),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.teal
+,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.lightBlue, Colors.lightBlueAccent],
+            colors: [Colors.purple, Colors.pinkAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -179,7 +180,8 @@ class _EventListingScreenState extends State<EventListingScreen> {
                 ElevatedButton(
                   onPressed: _selectDateRange,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlue,
+                    backgroundColor: Colors.teal
+,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -229,7 +231,8 @@ class _EventListingScreenState extends State<EventListingScreen> {
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.lightBlue,
+                                      color: Colors.teal
+,
                                     ),
                                   ),
                                   const SizedBox(height: 6),

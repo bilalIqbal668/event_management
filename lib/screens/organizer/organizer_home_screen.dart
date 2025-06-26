@@ -44,7 +44,8 @@ class _OrganizerHomeScreenState extends State<OrganizerHomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
-        selectedItemColor: Colors.lightBlue,
+        selectedItemColor: Colors.teal
+,
         unselectedItemColor: Colors.grey,
       ),
       floatingActionButton:
@@ -53,7 +54,8 @@ class _OrganizerHomeScreenState extends State<OrganizerHomeScreen> {
         onPressed: () => Navigator.pushNamed(context, '/create-event'),
         icon: const Icon(Icons.add),
         label: const Text('Add Event'),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.teal
+,
       )
           : null,
     );
@@ -96,12 +98,13 @@ class OrganizerHomeScreenContent extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Organizer Home"),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.teal
+,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.lightBlue, Colors.lightBlueAccent],
+            colors: [Colors.purple, Colors.pinkAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -250,7 +253,8 @@ class OrganizerHomeScreenContent extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.lightBlue,
+                  color: Colors.teal
+,
                 ),
               ),
               const SizedBox(height: 4),

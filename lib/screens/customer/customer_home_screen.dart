@@ -92,12 +92,13 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
             onPressed: _logout,
           ),
         ],
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.teal
+,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.lightBlue, Colors.lightBlueAccent],
+            colors: [Colors.purple, Colors.pinkAccent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -114,7 +115,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
         onTap: (index) {
           setState(() => _currentIndex = index);
         },
-        selectedItemColor: Colors.lightBlue,
+        selectedItemColor: Colors.teal
+,
         unselectedItemColor: Colors.grey,
       ),
     );
@@ -190,7 +192,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              const Icon(Icons.business, size: 40, color: Colors.lightBlue),
+              const Icon(Icons.business, size: 40, color: Colors.teal
+),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -198,14 +201,16 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.lightBlue),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal
+),
                     ),
                     const SizedBox(height: 4),
                     Text(subtitle, style: const TextStyle(color: Colors.grey)),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.lightBlue),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.teal
+),
             ],
           ),
         ),
